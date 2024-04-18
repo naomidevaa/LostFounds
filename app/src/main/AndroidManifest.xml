@@ -24,6 +24,13 @@
             android:name=".presentation.login.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.lostfound.LostFoundDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.lostfound.LostFoundManageActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".presentation.main.MainActivity"
             android:exported="true">
             <intent-filter>

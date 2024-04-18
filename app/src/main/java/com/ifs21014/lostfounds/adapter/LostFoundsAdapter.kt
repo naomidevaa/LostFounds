@@ -1,20 +1,24 @@
 package com.ifs21014.lostfounds.adapter
 
+import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ifs21014.lostfounds.data.remote.response.LostFoundsItemResponse
+import com.ifs18005.delcomtodo.data.remote.response.TodosItemResponse
 import com.ifs21014.lostfounds.databinding.ItemRowLostfoundBinding
 
 class LostFoundsAdapter :
-    ListAdapter<LostFoundsItemResponse,
+    ListAdapter<TodosItemResponse,
             LostFoundsAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
-    private var originalData = mutableListOf<LostFoundsItemResponse>()
-    private var filteredData = mutableListOf<LostFoundsItemResponse>()
+    private var originalData = mutableListOf<TodosItemResponse>()
+    private var filteredData = mutableListOf<TodosItemResponse>()
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
@@ -32,13 +36,14 @@ class LostFoundsAdapter :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val data = originalData[originalData.indexOf(getItem(position))]
-        holder.binding.cbItemTodoIsFinished.setOnCheckedChangeListener(null)
-        holder.binding.cbItemTodoIsFinished.setOnLongClickListener(null)
+
+        holder.binding.cbItemLostFoundIsFinished.setOnCheckedChangeListener(null)
+        holder.binding.cbItemLostFoundIsFinished.setOnLongClickListener(null)
 
         holder.bind(data)
 
-        holder.binding.cbItemTodoIsFinished.setOnCheckedChangeListener { _, isChecked ->
-            data.status = if (isChecked) "Ditemukan" else "Dicari"
+        holder.binding.cbItemLostFoundIsFinished.setOnCheckedChangeListener { _, isChecked ->
+            data.isCompleted = if (isChecked) 1 else 0
             holder.bind(data)
             onItemClickCallback.onCheckedChangeListener(data, isChecked)
         }
@@ -51,15 +56,31 @@ class LostFoundsAdapter :
     class MyViewHolder(val binding: ItemRowLostfoundBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(data: LostFoundsItemResponse) {
+        fun bind(data: TodosItemResponse) {
             binding.apply {
                 tvItemLostFoundTitle.text = data.title
-                cbItemTodoIsFinished.isChecked = data.status == "Ditemukan"
+                cbItemLostFoundIsFinished.isChecked = data.isCompleted == 1
+                val statusText = if (data.status.equals("found", ignoreCase = true)) {
+                    // Jika status "found", maka gunakan warna hijau
+                    highlightText("Found", Color.GREEN)
+                } else {
+                    // Jika status "lost", maka gunakan warna kuning
+                    highlightText("Lost", Color.YELLOW)
+                }
+                // Menetapkan teks status yang sudah disorot ke TextView
+                tvStatus.text = statusText
             }
+        }
+
+        private fun highlightText(text: String, color: Int): SpannableString {
+            val spannableString = SpannableString(text)
+            val foregroundColorSpan = ForegroundColorSpan(color)
+            spannableString.setSpan(foregroundColorSpan, 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            return spannableString
         }
     }
 
-    fun submitOriginalList(list: List<LostFoundsItemResponse>) {
+    fun submitOriginalList(list: List<TodosItemResponse>) {
         originalData = list.toMutableList()
         filteredData = list.toMutableList()
 
@@ -79,26 +100,25 @@ class LostFoundsAdapter :
     }
 
     interface OnItemClickCallback {
-        fun onCheckedChangeListener(todo: LostFoundsItemResponse, isChecked: Boolean)
+        fun onCheckedChangeListener(todo: TodosItemResponse, isChecked: Boolean)
         fun onClickDetailListener(todoId: Int)
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LostFoundsItemResponse>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TodosItemResponse>() {
             override fun areItemsTheSame(
-                oldItem: LostFoundsItemResponse,
-                newItem: LostFoundsItemResponse
+                oldItem: TodosItemResponse,
+                newItem: TodosItemResponse
             ): Boolean {
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: LostFoundsItemResponse,
-                newItem: LostFoundsItemResponse
+                oldItem: TodosItemResponse,
+                newItem: TodosItemResponse
             ): Boolean {
                 return oldItem == newItem
             }
         }
     }
 }
-

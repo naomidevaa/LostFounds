@@ -8,6 +8,7 @@ import com.ifs21014.lostfounds.data.repository.LostFoundRepository
 import com.ifs21014.lostfounds.data.repository.UserRepository
 import com.ifs21014.lostfounds.di.Injection
 import com.ifs21014.lostfounds.presentation.login.LoginViewModel
+import com.ifs21014.lostfounds.presentation.lostfound.LostFoundViewModel
 import com.ifs21014.lostfounds.presentation.main.MainViewModel
 import com.ifs21014.lostfounds.presentation.profile.ProfileViewModel
 import com.ifs21014.lostfounds.presentation.register.RegisterViewModel
@@ -15,7 +16,7 @@ import com.ifs21014.lostfounds.presentation.register.RegisterViewModel
 class ViewModelFactory(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
-    private val todoRepository: LostFoundRepository
+    private val lostFoundRepository: LostFoundRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
@@ -34,12 +35,17 @@ class ViewModelFactory(
 
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
                 MainViewModel
-                    .getInstance(authRepository) as T
+                    .getInstance(authRepository, lostFoundRepository) as T
             }
 
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel
                     .getInstance(authRepository, userRepository) as T
+            }
+
+            modelClass.isAssignableFrom(LostFoundViewModel::class.java) -> {
+                LostFoundViewModel
+                    .getInstance(lostFoundRepository) as T
             }
 
             else -> throw IllegalArgumentException(

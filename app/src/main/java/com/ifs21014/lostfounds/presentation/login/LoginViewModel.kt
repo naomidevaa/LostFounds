@@ -3,9 +3,9 @@ package com.ifs21014.lostfounds.presentation.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.ifs18005.delcomtodo.data.remote.response.DataLoginResponse
 import com.ifs21014.lostfounds.data.pref.UserModel
 import com.ifs21014.lostfounds.data.remote.MyResult
-import com.ifs21014.lostfounds.data.remote.response.DataLoginResponse
 import com.ifs21014.lostfounds.data.repository.AuthRepository
 import com.ifs21014.lostfounds.presentation.ViewModelFactory
 
@@ -21,6 +21,7 @@ class LoginViewModel(
     suspend fun saveSession(user: UserModel): LiveData<UserModel> {
         return authRepository.saveSession(user).asLiveData()
     }
+
     companion object {
         @Volatile
         private var INSTANCE: LoginViewModel? = null

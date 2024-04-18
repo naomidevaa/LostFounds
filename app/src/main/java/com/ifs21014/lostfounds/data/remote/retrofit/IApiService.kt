@@ -1,6 +1,12 @@
 package com.ifs21014.lostfounds.data.remote.retrofit
 
-import com.ifs21014.lostfounds.data.remote.response.*
+import com.ifs18005.delcomtodo.data.remote.response.DelcomAddTodoResponse
+import com.ifs18005.delcomtodo.data.remote.response.DelcomLoginResponse
+import com.ifs18005.delcomtodo.data.remote.response.DelcomResponse
+import com.ifs18005.delcomtodo.data.remote.response.DelcomTodoResponse
+import com.ifs18005.delcomtodo.data.remote.response.DelcomTodosResponse
+import com.ifs18005.delcomtodo.data.remote.response.DelcomUserResponse
+
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -33,30 +39,34 @@ interface IApiService {
     @POST("lost-founds")
     suspend fun postLostFound(
         @Field("title") title: String,
-        @Field("description") description: String
-    ): DelcomAddLostFoundResponse
+        @Field("description") description: String,
+        @Field("status") status: String,
+    ): DelcomAddTodoResponse
 
     @FormUrlEncoded
     @PUT("lost-founds/{id}")
     suspend fun putLostFound(
-        @Path("id") id: Int,
+        @Path("id") lostFoundId: Int,
         @Field("title") title: String,
         @Field("description") description: String,
-        @Field("is_finished") isFinished: Int
+        @Field("status") status: String,
+        @Field("is_completed") isCompleted: Int,
     ): DelcomResponse
 
     @GET("lost-founds")
-    suspend fun getLostFounds(
-        @Query("is_finished") isFinished: Int?
-    ): DelcomLostFoundsResponse
+    suspend fun getAll(
+        @Query("is_completed") isCompleted: Int?,
+        @Query("is_me") isMe: Int?,
+        @Query("status") status: String?,
+    ): DelcomTodosResponse
 
     @GET("lost-founds/{id}")
-    suspend fun getLostFound(
-        @Path("id") id: Int
-    ): DelcomLostFoundResponse
+    suspend fun getDetail(
+        @Path("id") lostFoundId: Int,
+    ): DelcomTodoResponse
 
     @DELETE("lost-founds/{id}")
-    suspend fun deleteLostFound(
-        @Path("id") id: Int
+    suspend fun delete(
+        @Path("id") lostFoundId: Int,
     ): DelcomResponse
 }

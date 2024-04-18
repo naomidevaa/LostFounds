@@ -1,26 +1,27 @@
 package com.ifs21014.lostfounds.data.repository
 
-
 import com.google.gson.Gson
+import com.ifs18005.delcomtodo.data.remote.response.DelcomResponse
 import com.ifs21014.lostfounds.data.remote.MyResult
-import com.ifs21014.lostfounds.data.remote.response.DelcomResponse
 import com.ifs21014.lostfounds.data.remote.retrofit.IApiService
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 
+
 class LostFoundRepository private constructor(
     private val apiService: IApiService,
 ) {
-    fun postTodo(
+    fun postLostFound(
         title: String,
         description: String,
+        status: String,
     ) = flow {
         emit(MyResult.Loading)
         try {
             //get success message
             emit(
                 MyResult.Success(
-                    apiService.postLostFound(title, description).data
+                    apiService.postLostFound(title, description, status).data
                 )
             )
         } catch (e: HttpException) {
@@ -36,11 +37,12 @@ class LostFoundRepository private constructor(
         }
     }
 
-    fun putTodo(
-        todoId: Int,
+    fun putLostFound(
+        lostFoundId: Int,
         title: String,
         description: String,
-        isFinished: Boolean,
+        status: String,
+        isCompleted: Boolean,
     ) = flow {
         emit(MyResult.Loading)
         try {
@@ -48,10 +50,11 @@ class LostFoundRepository private constructor(
             emit(
                 MyResult.Success(
                     apiService.putLostFound(
-                        todoId,
+                        lostFoundId,
                         title,
                         description,
-                        if (isFinished) 1 else 0
+                        status,
+                        if (isCompleted) 1 else 0
                     )
                 )
             )
@@ -68,13 +71,15 @@ class LostFoundRepository private constructor(
         }
     }
 
-    fun getTodos(
-        isFinished: Int?,
+    fun getAll(
+        isCompleted: Int?,
+        isMe: Int?,
+        status: String?,
     ) = flow {
         emit(MyResult.Loading)
         try {
             //get success message
-            emit(MyResult.Success(apiService.getLostFounds(isFinished)))
+            emit(MyResult.Success(apiService.getAll(isCompleted, isMe, status)))
         } catch (e: HttpException) {
             //get error message
             val jsonInString = e.response()?.errorBody()?.string()
@@ -88,13 +93,13 @@ class LostFoundRepository private constructor(
         }
     }
 
-    fun getTodo(
-        todoId: Int,
+    fun getDetail(
+        lostFoundId: Int,
     ) = flow {
         emit(MyResult.Loading)
         try {
             //get success message
-            emit(MyResult.Success(apiService.getLostFound(todoId)))
+            emit(MyResult.Success(apiService.getDetail(lostFoundId)))
         } catch (e: HttpException) {
             //get error message
             val jsonInString = e.response()?.errorBody()?.string()
@@ -108,12 +113,13 @@ class LostFoundRepository private constructor(
         }
     }
 
-    fun deleteTodo(
-        todoId: Int,
+    fun delete(
+        lostFoundId: Int,
     ) = flow {
         emit(MyResult.Loading)
         try {
-            emit(MyResult.Success(apiService.deleteLostFound(todoId)))
+            //get success message
+            emit(MyResult.Success(apiService.delete(lostFoundId)))
         } catch (e: HttpException) {
             //get error message
             val jsonInString = e.response()?.errorBody()?.string()
@@ -142,5 +148,3 @@ class LostFoundRepository private constructor(
         }
     }
 }
-
-

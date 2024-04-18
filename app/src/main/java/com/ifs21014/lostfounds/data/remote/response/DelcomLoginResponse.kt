@@ -1,4 +1,4 @@
-package com.ifs21014.lostfounds.data.remote.response
+package com.ifs18005.delcomtodo.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 

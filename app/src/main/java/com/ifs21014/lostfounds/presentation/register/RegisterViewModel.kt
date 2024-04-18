@@ -3,8 +3,8 @@ package com.ifs21014.lostfounds.presentation.register
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.ifs18005.delcomtodo.data.remote.response.DelcomResponse
 import com.ifs21014.lostfounds.data.remote.MyResult
-import com.ifs21014.lostfounds.data.remote.response.DelcomResponse
 import com.ifs21014.lostfounds.data.repository.AuthRepository
 import com.ifs21014.lostfounds.presentation.ViewModelFactory
 
